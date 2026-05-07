@@ -1,7 +1,8 @@
 # Typography Character Classifier using ANN + FastAPI
 
-A complete machine learning project for classifying typographic characters from grayscale images.  
-The model is trained on the TMNIST Alphabet dataset and deployed with FastAPI. The app supports both image upload and drawing a character directly in the browser.
+A complete machine learning project for classifying typographic characters from grayscale images.
+
+The model is trained on the TMNIST Alphabet dataset and deployed using FastAPI. The app supports both image upload and drawing a character directly in the browser.
 
 ---
 
@@ -16,9 +17,37 @@ The goal of this project is to build, train, evaluate, and deploy an Artificial 
 
 ---
 
+## Demo
+
+### Home Page
+![Home Page](screenshots/01_home_page.png)
+
+### Upload Prediction
+![Upload Prediction](screenshots/02_upload_prediction.png)
+
+### Draw Prediction
+![Draw Prediction](screenshots/03_draw_prediction.png)
+
+### Top 3 Predictions
+![Top 3 Predictions](screenshots/04_top3_predictions.png)
+
+---
+
+## Kaggle Notebook
+
+The training notebook is also available on Kaggle:
+
+[View Kaggle Notebook](https://www.kaggle.com/code/mlnagy/tmnist-ann-character-classifier)
+
+---
+
 ## Dataset
 
 The project uses the **TMNIST Alphabet (94 characters)** dataset from Kaggle.
+
+Dataset link:
+
+[TMNIST Alphabet 94 Characters Dataset](https://www.kaggle.com/datasets/nikbearbrown/tmnist-alphabet-94-characters)
 
 Dataset structure:
 
@@ -29,9 +58,6 @@ Dataset structure:
 | `1` to `784` | Grayscale pixel values from 0 to 255 |
 
 Each image is represented as a flattened `28 × 28` grayscale image, so each sample has `784` pixel values.
-
-Dataset link:  
-https://www.kaggle.com/datasets/nikbearbrown/tmnist-alphabet-94-characters
 
 ---
 
@@ -51,7 +77,13 @@ Preprocessing steps:
   - Validation set
   - Test set
 
-The model uses label-encoded targets, so the loss function used is `sparse_categorical_crossentropy`.
+Since the labels were encoded as integer values using `LabelEncoder`, the model uses:
+
+```text
+sparse_categorical_crossentropy
+```
+
+If one-hot encoding was used instead, `categorical_crossentropy` would be the suitable loss function.
 
 ---
 
@@ -70,7 +102,7 @@ Dropout: 0.3
 Output Layer: 94 neurons + Softmax
 ```
 
-The output layer has 94 neurons because the dataset contains 94 character classes.
+The output layer has `94` neurons because the dataset contains `94` character classes.
 
 ---
 
@@ -140,11 +172,12 @@ The prediction system:
 
 1. Takes an image
 2. Converts it to grayscale
-3. Resizes it to `28 × 28`
-4. Normalizes pixel values
-5. Flattens it to `784` values
-6. Predicts the class
-7. Converts the predicted index back to the original character
+3. Crops and centers the character
+4. Resizes it to `28 × 28`
+5. Normalizes pixel values
+6. Flattens it to `784` values
+7. Predicts the class
+8. Converts the predicted index back to the original character
 
 The label mapping is saved in:
 
@@ -204,7 +237,7 @@ The drawing feature is added as a bonus. The model was trained on typographic fo
 ## Project Structure
 
 ```text
-Task6/
+typography-character-classifier/
 │
 ├── app/
 │   ├── main.py
@@ -217,8 +250,21 @@ Task6/
 ├── notebook/
 │   └── tmnist_ann_training.ipynb
 │
+├── sample_inputs/
+│   ├── sample_5.png
+│   ├── sample_A.png
+│   ├── sample_W.png
+│   └── sample_question_mark.png
+│
+├── screenshots/
+│   ├── 01_home_page.png
+│   ├── 02_upload_prediction.png
+│   ├── 03_draw_prediction.png
+│   └── 04_top3_predictions.png
+│
 ├── requirements.txt
 ├── .gitignore
+├── LICENSE
 └── README.md
 ```
 
@@ -226,13 +272,20 @@ Task6/
 
 ## How to Run the Project
 
-### 1. Create a virtual environment
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/Nagy-API/typography-character-classifier.git
+cd typography-character-classifier
+```
+
+### 2. Create a virtual environment
 
 ```bash
 python -m venv venv
 ```
 
-### 2. Activate the environment
+### 3. Activate the environment
 
 On Windows PowerShell:
 
@@ -247,25 +300,37 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 venv\Scripts\activate
 ```
 
-### 3. Install requirements
+### 4. Install requirements
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Start the FastAPI server
+### 5. Start the FastAPI server
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-### 5. Open the app
+### 6. Open the app
 
 Open this URL in your browser:
 
 ```text
 http://127.0.0.1:8000
 ```
+
+---
+
+## Sample Inputs
+
+The repository includes a few sample images inside:
+
+```text
+sample_inputs/
+```
+
+These images can be used to quickly test the upload prediction feature.
 
 ---
 
@@ -304,7 +369,8 @@ The dataset is not included in the repository because it is large. It can be dow
 
 ## Limitations
 
-The model was trained on typographic characters generated from fonts, not handwritten characters.  
+The model was trained on typographic characters generated from fonts, not handwritten characters.
+
 Because of that, hand-drawn characters may have lower confidence than uploaded printed characters.
 
 ---
@@ -313,15 +379,15 @@ Because of that, hand-drawn characters may have lower confidence than uploaded p
 
 Possible improvements:
 
-- Train a CNN model for better image feature extraction
+- Replace the ANN with a CNN for better image feature extraction
 - Add more handwritten-like samples
 - Add data augmentation
 - Deploy the API online
+- Add Docker support
 - Improve preprocessing for hand-drawn characters
 
 ---
 
 ## Author
 
-**Nagy**  
-AI Student
+**Nagy**
